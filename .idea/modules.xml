@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/B-Dool-Server.iml" filepath="$PROJECT_DIR$/.idea/B-Dool-Server.iml" />
-      <module fileurl="file://$PROJECT_DIR$/document-service/document-service.iml" filepath="$PROJECT_DIR$/document-service/document-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/document-service/document-front.iml" filepath="$PROJECT_DIR$/document-service/document-front.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/member-hub-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/member-hub-service.main.iml" />
     </modules>
   </component>
