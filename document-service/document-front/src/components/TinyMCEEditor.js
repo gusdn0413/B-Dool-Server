@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
-import { getDocumentContent, updateDocumentContent } from '../services/DocumentApi';
+import React, {useState, useEffect} from 'react';
+import {Editor} from '@tinymce/tinymce-react';
+import {getDocumentContent, updateDocumentContent} from '../services/DocumentApi';
 import UseWebSocketConnection from '../services/UseWebSocketConnection';
 
-const TinyMCEEditor = ({ initialContent, documentId }) => {
+const TinyMCEEditor = ({initialContent, documentId}) => {
     const [content, setContent] = useState(initialContent || '');
 
     // 서버에서 문서 콘텐츠를 가져오는 부분 (파일 로드)
@@ -29,7 +29,7 @@ const TinyMCEEditor = ({ initialContent, documentId }) => {
     };
 
     // WebSocket 연결 설정
-    const { sendDocument } = UseWebSocketConnection(documentId, handleMessageReceived);
+    const {sendDocument} = UseWebSocketConnection(documentId, handleMessageReceived);
 
     // 에디터의 내용이 변경될 때 서버로 전체 데이터를 전송
     const handleEditorChange = (newContent) => {

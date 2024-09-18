@@ -37,9 +37,9 @@ public class DocumentServiceImpl implements DocumentService {
                 .name(fileName)
                 .content(content)
                 .build();
-
+        documentRepository.save(document);
         redisTemplate.opsForValue().set("document:" + document.getId(), content);
-        return documentRepository.save(document);
+        return document;
     }
 
     public String getDocumentContent(Long id) {
