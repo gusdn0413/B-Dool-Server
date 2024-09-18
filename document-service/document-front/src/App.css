@@ -1,38 +1,63 @@
+/* 전체 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* App 전체 스타일 */
 .App {
-  text-align: center;
+    text-align: center;
+    padding: 20px;
+    background-color: #f4f4f4;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* 문서가 표시될 박스 */
+.document-container, .editor-container {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* 문서 콘텐츠 */
+.document-content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    white-space: normal;
+    line-height: 1.6;
+    font-size: 16px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* 저장 버튼 */
+.save-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+.save-button:hover {
+    background-color: #45a049;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* TinyMCE 에디터 스타일 */
+.mce-content-body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 10px;
+    font-size: 16px;
 }

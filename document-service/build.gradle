@@ -29,6 +29,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.apache.pdfbox:pdfbox:3.0.3'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    implementation 'org.jsoup:jsoup:1.18.1'
+
+    implementation 'org.bitbucket.cowwoc:diff-match-patch:1.2'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
