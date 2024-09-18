@@ -9,7 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DocumentUpdateMessage {
     private Long documentId;
-    private String chunk;
-    private Boolean isLastChunk;
-    // Getters and Setters
+    private String content;
 }

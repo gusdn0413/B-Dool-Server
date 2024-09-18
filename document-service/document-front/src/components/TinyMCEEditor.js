@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import {Editor} from '@tinymce/tinymce-react';
-import {getDocumentContent, updateDocumentContent} from '../services/DocumentApi';
+import React, { useState, useEffect } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
+import { getDocumentContent, updateDocumentContent } from '../services/DocumentApi';
 import UseWebSocketConnection from '../services/UseWebSocketConnection';
 
-const TinyMCEEditor = ({initialContent, documentId}) => {
+const TinyMCEEditor = ({ initialContent, documentId }) => {
     const [content, setContent] = useState(initialContent || '');
-    const [receivedChunks, setReceivedChunks] = useState('');  // 수신한 청크 누적 저장소
 
     // 서버에서 문서 콘텐츠를 가져오는 부분 (파일 로드)
     useEffect(() => {
@@ -23,32 +22,22 @@ const TinyMCEEditor = ({initialContent, documentId}) => {
         }
     }, [documentId, initialContent]);
 
-    // WebSocket을 통해 청크를 수신할 때 호출되는 함수
-    const handleMessageReceived = (chunk, isLastChunk) => {
-        console.log("Received chunk via WebSocket:", chunk);
-
-        // 청크 데이터를 누적 저장
-        const updatedChunks = receivedChunks + chunk;
-        setReceivedChunks(updatedChunks);  // 상태에 누적된 청크를 저장
-
-        // 마지막 청크라면 전체 문서로 업데이트
-        if (isLastChunk) {
-            console.log("Received full document via WebSocket.");
-            setContent(updatedChunks);  // 전체 문서 업데이트
-            setReceivedChunks('');  // 청크 저장소 초기화
-        }
+    // WebSocket을 통해 전체 문서를 수신할 때 호출되는 함수
+    const handleMessageReceived = (fullContent) => {
+        console.log("Received full document via WebSocket:", fullContent);
+        setContent(fullContent); // 실시간으로 받은 전체 문서를 에디터에 업데이트
     };
 
-    // WebSocket 연결 설정 (청크 수신 처리)
-    const {sendDocumentChunks} = UseWebSocketConnection(documentId, handleMessageReceived);
+    // WebSocket 연결 설정
+    const { sendDocument } = UseWebSocketConnection(documentId, handleMessageReceived);
 
     // 에디터의 내용이 변경될 때 서버로 전체 데이터를 전송
     const handleEditorChange = (newContent) => {
         console.log("Editor content changed, updating state:", newContent);
         setContent(newContent);
 
-        // 변경된 콘텐츠를 서버로 전송 (청크로 나누어 전송)
-        sendDocumentChunks(newContent);
+        // 변경된 콘텐츠를 서버로 전송 (청크 나누기 없이 전체 전송)
+        sendDocument(newContent);
     };
 
     // 저장 버튼 클릭 시 서버로 전체 내용 전송
