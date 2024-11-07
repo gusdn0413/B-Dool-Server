@@ -17,7 +17,6 @@ public class Profile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name; // 이름
     private String nickname; // 별명
     private String position; // 직책
@@ -47,7 +46,8 @@ public class Profile {
         updatedAt = LocalDateTime.now();
     }
 
-    public void updateProfile(String nickname, String position, String profileImgUrl) {
+    public void updateProfile(String name, String nickname, String position, String profileImgUrl) {
+        this.name = name;
         this.nickname = nickname;
         this.position = position;
         this.profileImgUrl = profileImgUrl;
@@ -65,9 +65,16 @@ public class Profile {
     public static ProfileResponse toProfileResponse(Profile profile) {
         return new ProfileResponse(
                 profile.getId(),
+                profile.getName(),
                 profile.getNickname(),
+                profile.getPosition(),
+                profile.getStatus(),
+                profile.getProfileImgUrl(),
                 profile.getIsOnline(),
-                profile.getProfileImgUrl()
+                profile.getIsWorkspaceCreator(),
+                profile.getMemberId(),
+                profile.getEmail(),
+                profile.getWorkspaceId()
         );
     }
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProfileUpdateRequest {
+    private String name;
     private String nickname;
     private String position;
     private String profileImgUrl;

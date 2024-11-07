@@ -48,11 +48,12 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("member not found"));
         Profile profile = Profile.builder()
                 .name(profileModel.getName())
+                .position(profileModel.getPosition())
                 .nickname(profileModel.getNickname())
                 .profileImgUrl(profileModel.getProfileImgUrl())
                 .memberId(member.getId())
                 .workspaceId(profileModel.getWorkspaceId())
-                .isWorkspaceCreator(true)
+                .isWorkspaceCreator(profileModel.getIsWorkspaceCreator())
                 .isOnline(false)
                 .email(member.getEmail())
                 .build();
@@ -123,7 +124,7 @@ public class ProfileServiceImpl implements ProfileService {
     public ProfileFindResponse update(Long profileId, ProfileUpdateRequest profileUpdateRequest) {
         Profile findProfile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new IllegalArgumentException("profile not found"));
-        findProfile.updateProfile(profileUpdateRequest.getNickname(),
+        findProfile.updateProfile(profileUpdateRequest.getName(),profileUpdateRequest.getNickname(),
                 profileUpdateRequest.getPosition(),
                 profileUpdateRequest.getProfileImgUrl());
         profileRepository.save(findProfile);
