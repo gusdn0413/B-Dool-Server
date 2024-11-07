@@ -2,7 +2,7 @@ spring:
   application:
     name: chat
   profiles:
-    active: local
+    active: prod
   config:
     import: optional:configserver:http://localhost:8888
 management:

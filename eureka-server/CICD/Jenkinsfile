@@ -1,0 +1,128 @@
+pipeline {
+    agent {
+        kubernetes {
+            label 'kubernetes-CICD'
+            defaultContainer 'jnlp'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins/label: kubernetes-CICD
+spec:
+  ttlSecondsAfterFinished: 600
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:latest
+    resources:
+      limits:
+        memory: 1Gi
+        cpu: 1
+      requests:
+        memory: 1Gi
+        cpu: 1
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: workspace-volume
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: workspace-volume
+  - name: buildkit
+    image: moby/buildkit:latest
+    securityContext:
+      privileged: true
+    args:
+    - --addr=unix:///run/buildkit/buildkitd.sock
+    volumeMounts:
+    - name: workspace-volume
+      mountPath: /home/jenkins/agent
+    - name: buildkit-socket
+      mountPath: /run/buildkit
+  volumes:
+  - name: workspace-volume
+    emptyDir: {}
+  - name: buildkit-socket
+    emptyDir: {}
+"""
+        }
+    }
+
+    environment {
+        DOCKER_CREDENTIALS_ID = 'docker-hub'
+        REPO_URL = 'https://github.com/B-Dool/B-Dool-Server.git'
+        DOCKER_HUB_URL = 'kang1521'
+        IMAGE_NAME = "${DOCKER_HUB_URL}/eureka"
+    }
+
+    stages {
+        stage('Clone Repository') {
+            steps {
+                deleteDir() // 워크스페이스 초기화
+                git url: "${REPO_URL}", branch: 'master', changelog: false, poll: false
+            }
+        }
+
+        stage('Build') {
+            when {
+                changeset "eureka-server/**/*"
+            }
+            steps {
+                dir('eureka-server') {
+                    sh 'chmod +x gradlew'
+                    sh './gradlew clean build'
+                }
+            }
+        }
+
+        stage('Build and Push Docker Image') {
+            when {
+                changeset "eureka-server/**/*"
+            }
+            steps {
+                dir('eureka-server') {
+                    container('buildkit') {
+                        withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                            script {
+                                dockerLogin()
+                            }
+                            sh """
+                            # Dockerfile 복사
+                            cp Dockerfile copied_Dockerfile
+
+                            # BuildKit을 사용하여 이미지 빌드 및 푸시 (캐시 사용 안 함)
+                            buildctl --addr unix:///run/buildkit/buildkitd.sock build \
+                                --frontend dockerfile.v0 \
+                                --local context=. \
+                                --local dockerfile=. \
+                                --opt filename=copied_Dockerfile \
+                                --opt no-cache=true \
+                                --output type=image,name=${IMAGE_NAME}:${BUILD_NUMBER},name=${IMAGE_NAME}:latest,push=true
+                            """
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "배포가 성공적으로 완료되었습니다."
+        }
+        failure {
+            echo "배포에 실패했습니다."
+        }
+    }
+}
+
+def dockerLogin() {
+    sh """
+        mkdir -p ~/.docker
+        echo '{ "auths": { "https://index.docker.io/v1/": { "username": "'$DOCKER_USERNAME'", "password": "'$DOCKER_PASSWORD'" } } }' > ~/.docker/config.json
+    """
+}
