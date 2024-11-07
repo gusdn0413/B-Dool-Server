@@ -1,0 +1,25 @@
+server:
+  port: 8888
+spring:
+  cloud:
+    config:
+      server:
+        encrypt:
+          enabled: false
+        git:
+          default-label: master
+          uri: git@github.com:B-Dool/config-server.git
+          search-paths: config
+          ignoreLocalSshSettings: true
+          strictHostKeyChecking: false
+          hostKey: AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+          hostKeyAlgorithm: ecdsa-sha2-nistp256
+          privateKey: |
+            -----BEGIN EC PRIVATE KEY-----
+            MHcCAQEEIHLIpXONGQDinKpgYjrDLrh+dx2WttznmifiCSCV3j06oAoGCCqGSM49
+            AwEHoUQDQgAExtxbMquEdnkyRoMUOiFUToOYCMzQUJi6Hftll9iOaNzz8MSHzuGx
+            nqhZpIPdwdRql9fCndaGpFW1wyYwkn2WYA==
+            -----END EC PRIVATE KEY-----
+          passphrase:
+encrypt:
+  key: yAjkVXch4q5lGdXu1f5nSvP7n8VQF/hsiBQpYvxzvqc=

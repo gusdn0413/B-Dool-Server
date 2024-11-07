@@ -1,15 +1,12 @@
 spring:
-  datasource:
-    url: jdbc:mysql://mysql:3306/bdooldb
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.MySQLDialect
-
-
-firebase:
+  application:
+    name: notification
+  profiles:
+    active: defalut
   config:
-    path: "/projects/notification/bdool-3cce6-dff899281525.json"
+    import: optional:configserver:http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

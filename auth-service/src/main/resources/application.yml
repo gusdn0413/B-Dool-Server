@@ -1,20 +1,12 @@
 spring:
-
-  datasource:
-    url: jdbc:mysql://mysql:3306/bdooldb
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  data:
-    redis:
-      host: redis
-      port: 6379
-      password: password
-
-server:
-  port: 8081
-
-member-service:
-  url: http://member-hub-service:8080/api
-jwt:
-  secret-key: "9e4898f0e111202c594d9b06197d62fe3b812fa629fea03f00ecfc0d968b5bcbc8d82fef1bec013feb13dee1bf5b1e8f4b4d04d154b567ba57e0a51109247745"
+  application:
+    name: auth
+  profiles:
+    active: defalut
+  config:
+    import: optional:configserver:http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

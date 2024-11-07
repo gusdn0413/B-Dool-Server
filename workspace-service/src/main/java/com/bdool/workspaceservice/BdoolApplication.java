@@ -1,9 +1,11 @@
-package com.bdool.bdool;
+package com.bdool.workspaceservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
+@EnableDiscoveryClient
 public class BdoolApplication {
 
     public static void main(String[] args) {

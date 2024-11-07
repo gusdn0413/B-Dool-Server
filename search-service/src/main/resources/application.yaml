@@ -1,12 +1,12 @@
 spring:
-  elasticsearch:
-    #uris: 211.188.50.55:9200
-    uris: elasticsearch:9200
-    username: elastic
-    password: 6f=NrJX*JuDvuxD6wuux
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+  application:
+    name: search
+  profiles:
+    active: defalut
+  config:
+    import: optional:configserver:http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

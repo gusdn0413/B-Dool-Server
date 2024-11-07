@@ -1,35 +1,12 @@
 spring:
-  sql:
-    init:
-      mode: always
-
-  datasource:
-    #url: jdbc:mysql://211.188.50.55:3306/bdooldb
-    url: jdbc:mysql://mysql:3306/bdooldb
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-    # Optional: HikariCP ??
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 30000
-      max-lifetime: 1800000
-      connection-timeout: 20000
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    show-sql: true
-   # defer-datasource-initialization: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+  application:
+    name: workspace
+  profiles:
+    active: defalut
+  config:
+    import: optional:configserver:http://localhost:8888
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
