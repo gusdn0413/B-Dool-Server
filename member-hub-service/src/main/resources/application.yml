@@ -37,7 +37,7 @@ spring:
 
 
 notification-service:
-  url: http://notification-service:8085/api
+  url: http://notification-service:8082/api
 
 channel-service:
   url: http://chat-service:8084/api

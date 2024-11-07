@@ -9,7 +9,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FileService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FileService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FileService.test.iml" filepath="$PROJECT_DIR$/.idea/modules/FileService.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/auth-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auth-service.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/bdool.main.iml" filepath="$PROJECT_DIR$/.idea/modules/bdool.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/chatbot-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/chatbot-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.bdool.ChatService.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.bdool.ChatService.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/document-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/document-service.main.iml" />
