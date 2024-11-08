@@ -1,12 +1,36 @@
 spring:
+  servlet:
+    multipart:
+      enabled: true #파일 업로드 활성화
+      file-size-threshold: 2KB # 파일 임시 저장 임계값: 2KB를 넘는 파일은 디스크에 저장됨
+      max-file-size: 500MB # 최대 파일 크기 제한
+      max-request-size: 515MB # 최대 요청 크기 제한
   application:
-    name: chat
-  profiles:
-    active: prod
-  config:
-    import: optional:configserver:http://211.188.50.29:8888
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh
+    name: ChatService
+  data:
+    mongodb:
+      uri: mongodb://root:1234@172.17.0.1:27017/chat?authSource=admin
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+ncloud:
+  s3:
+    accessKey: "7D5464DD87924BE62F90"
+    secretKey: "2EB7A30065C8A75E1E26CA1D0145CE499737E89B"
+    endpoint: "https://kr.object.ncloudstorage.com"
+    region: "kr-standard"
+    bucket: "bdool-file"
+
+notification-service:
+  url: http://211.188.50.55:8082/api
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://172.17.0.1:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
