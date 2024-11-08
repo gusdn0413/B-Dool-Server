@@ -69,7 +69,6 @@ spec:
 
         stage('Build') {
             when {
-                currentBuild.previousBuild?.result == 'FAILURE' ||
                 changeset "eureka-server/**/*"
             }
             steps {
@@ -82,7 +81,6 @@ spec:
 
         stage('Build and Push Docker Image') {
             when {
-                currentBuild.previousBuild?.result == 'FAILURE' ||
                 changeset "eureka-server/**/*"
             }
             steps {
