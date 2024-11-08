@@ -8,6 +8,10 @@ import com.bdool.chatservice.model.entity.ParticipantEntity;
 import com.bdool.chatservice.model.repository.ChannelRepository;
 import com.bdool.chatservice.model.repository.ParticipantRepository;
 import com.bdool.chatservice.service.ChannelService;
+import com.bdool.chatservice.sse.ChannelSSEService;
+import com.bdool.chatservice.sse.model.ChannelAddResponse;
+import com.bdool.chatservice.sse.model.ChannelDeleteResponse;
+import com.bdool.chatservice.sse.model.ChannelRenameResponse;
 import com.bdool.chatservice.util.UUIDUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +27,7 @@ import java.util.UUID;
 public class ChannelServiceImpl implements ChannelService {
 
     private final ChannelRepository channelRepository;
+    private final ChannelSSEService channelSSEService;
     private final ParticipantRepository participantRepository;
 
     @Override
@@ -59,6 +64,11 @@ public class ChannelServiceImpl implements ChannelService {
         // 채널 저장
         ChannelEntity savedChannel = channelRepository.save(channelEntity);
 
+        ChannelAddResponse addResponse = new ChannelAddResponse();
+        addResponse.setChannelId(savedChannel.getChannelId());
+        addResponse.setChannelName(savedChannel.getName());
+        channelSSEService.notifyChannelAdd(addResponse);
+
         // DM 또는 일반 채널 모두 생성자 정보를 참석자로 저장
         participantRepository.save(
                 ParticipantEntity.builder()
@@ -86,22 +96,27 @@ public class ChannelServiceImpl implements ChannelService {
                         throw new IllegalArgumentException("You are not authorized to update this channel.");
                     }
 
-                    existingChannel.setName(channel.getName());
-                    existingChannel.setDescription(channel.getDescription());
-                    existingChannel.setIsPrivate(channel.getIsPrivate());
-                    existingChannel.setChannelType(channel.getChannelType());
-                    existingChannel.setUpdatedAt(LocalDateTime.now());
+                    // Optional을 사용하여 null이 아닐 경우에만 필드를 업데이트
+                    Optional.ofNullable(channel.getName()).ifPresent(name -> {
+                        existingChannel.setName(name);
+                        updateChannelName(channelId, name);
+                    });
+                    Optional.ofNullable(channel.getDescription()).ifPresent(existingChannel::setDescription);
+                    Optional.ofNullable(channel.getIsPrivate()).ifPresent(existingChannel::setIsPrivate);
+                    Optional.ofNullable(channel.getChannelType()).ifPresent(existingChannel::setChannelType);
 
-                    // workspacesId도 값이 null이 아니면 업데이트
-                    if (channel.getWorkspacesId() != null) {
-                        existingChannel.setWorkspacesId(channel.getWorkspacesId());
-                    } else {
-                        throw new ChannelNotFoundException("Workspace ID cannot be null during channel update.");
-                    }
+                    // workspacesId는 필수 필드이므로, null이 아니어야 업데이트
+                    Optional.ofNullable(channel.getWorkspacesId()).ifPresentOrElse(
+                            existingChannel::setWorkspacesId,
+                            () -> { throw new ChannelNotFoundException("Workspace ID cannot be null during channel update."); }
+                    );
+
+                    existingChannel.setUpdatedAt(LocalDateTime.now());
 
                     return channelRepository.save(existingChannel);
                 }).orElseThrow(() -> new ChannelNotFoundException("Channel not found with ID: " + channelId));
     }
+
 
     @Override
     public List<ChannelEntity> findAll() {
@@ -128,8 +143,25 @@ public class ChannelServiceImpl implements ChannelService {
     public void deleteById(UUID channelId) {
         if (channelRepository.existsById(channelId)) {
             channelRepository.deleteById(channelId);
+            ChannelDeleteResponse deleteResponse = new ChannelDeleteResponse();
+            deleteResponse.setChannelId(channelId);
+            channelSSEService.notifyChannelDelete(deleteResponse);
         } else {
             throw new RuntimeException("Channel not found with ID: " + channelId);
         }
+    }
+
+    public ChannelEntity updateChannelName(UUID channelId, String newName) {
+        return channelRepository.findById(channelId).map(existingChannel -> {
+            existingChannel.setName(newName);
+            existingChannel.setUpdatedAt(LocalDateTime.now());
+            ChannelEntity updatedChannel = channelRepository.save(existingChannel);
+
+            // 채널 이름 변경 SSE 알림
+            ChannelRenameResponse renameResponse = new ChannelRenameResponse(updatedChannel.getChannelId(), newName);
+            channelSSEService.notifyChannelRename(renameResponse);
+
+            return updatedChannel;
+        }).orElseThrow(() -> new ChannelNotFoundException("Channel not found with ID: " + channelId));
     }
 }
