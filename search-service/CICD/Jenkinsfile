@@ -69,6 +69,7 @@ stages {
 
         stage('Build') {
             when {
+                currentBuild.previousBuild?.result == 'FAILURE' ||
                 changeset "search-service/**/*"
             }
             steps {
@@ -81,6 +82,7 @@ stages {
 
         stage('Build and Push Docker Image') {
             when {
+                currentBuild.previousBuild?.result == 'FAILURE' ||
                 changeset "search-service/**/*"
             }
             steps {
