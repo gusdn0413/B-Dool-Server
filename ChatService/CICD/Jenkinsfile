@@ -10,7 +10,6 @@ metadata:
   labels:
     jenkins/label: kubernetes-CICD
 spec:
-  ttlSecondsAfterFinished: 600
   containers:
   - name: jnlp
     image: jenkins/inbound-agent:latest
