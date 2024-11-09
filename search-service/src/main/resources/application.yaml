@@ -4,7 +4,7 @@ spring:
   profiles:
     active: defalut
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://211.188.50.29:8888
 management:
   endpoints:
     web:
