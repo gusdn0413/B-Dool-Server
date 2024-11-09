@@ -69,7 +69,8 @@ stages {
 
         stage('Build') {
             when {
-                changeset "notification-service/**/*"
+                currentBuild.previousBuild?.result == 'FAILURE' ||
+                sh(script: "git diff --name-only HEAD~1 | grep '^notification-service/'", returnStatus: true) == 0
             }
             steps {
                 dir('notification-service') {
@@ -81,7 +82,8 @@ stages {
 
         stage('Build and Push Docker Image') {
             when {
-                changeset "notification-service/**/*"
+                currentBuild.previousBuild?.result == 'FAILURE' ||
+                sh(script: "git diff --name-only HEAD~1 | grep '^notification-service/'", returnStatus: true) == 0
             }
             steps {
                 dir('notification-service') {

@@ -70,7 +70,7 @@ spec:
             stage('Build') {
                 when {
                     currentBuild.previousBuild?.result == 'FAILURE' ||
-                    changeset "chatbot-service/**/*"
+                    sh(script: "git diff --name-only HEAD~1 | grep '^chatbot-service/'", returnStatus: true) == 0
                 }
                 steps {
                     dir('chatbot-service') {
@@ -82,7 +82,8 @@ spec:
 
             stage('Build and Push Docker Image') {
                 when {
-                    changeset "chatbot-service/**/*"
+                    currentBuild.previousBuild?.result == 'FAILURE' ||
+                    sh(script: "git diff --name-only HEAD~1 | grep '^chatbot-service/'", returnStatus: true) == 0
                 }
                 steps {
                     dir('chatbot-service') {

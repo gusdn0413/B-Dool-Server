@@ -69,7 +69,8 @@ stages {
 
         stage('Build') {
             when {
-                changeset "workspace-service/**/*"
+                currentBuild.previousBuild?.result == 'FAILURE' ||
+                sh(script: "git diff --name-only HEAD~1 | grep '^workspace-service/'", returnStatus: true) == 0
             }
             steps {
                 dir('workspace-service') {
@@ -81,7 +82,8 @@ stages {
 
         stage('Build and Push Docker Image') {
             when {
-                changeset "workspace-service/**/*"
+                currentBuild.previousBuild?.result == 'FAILURE' ||
+                sh(script: "git diff --name-only HEAD~1 | grep '^workspace-service/'", returnStatus: true) == 0
             }
             steps {
                 dir('workspace-service') {
